@@ -1,32 +1,25 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import ru.kata.spring.boot_security.demo.services.UserService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-
-@Controller
+@RestController
+@RequestMapping("/api")
 public class UserController {
-   private final UserService userService;
 
+    private final ApiService apiService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(ApiService apiService) {
+        this.apiService = apiService;
     }
 
-    @GetMapping("/user")
-    public String getUserInfo(Model model) {
-        model.addAttribute("user", userService
-                .loadUserByUsername(userService.getCurrentUsername()));
-        return "user";
-    }
-    @GetMapping("/user/{username}")
-    public String getUser(@PathVariable String username, Model model) {
-        model.addAttribute("user", userService.loadUserByUsername(username));
-        return "user";
+    @GetMapping("/execute")
+    public ResponseEntity<String> executeOperations() {
+        String result = apiService.executeOperations();
+        return ResponseEntity.ok(result); // Возвращаем результат с HTTP статусом 200 OK
     }
 }
